@@ -5,7 +5,7 @@ ENV GO111MODULE=on
 COPY . .
 RUN ls -la /src
 RUN go mod download
-RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o webhook -ldflags '-w -extldflags "-static"' .
+RUN GOOS=linux GOARCH=arm CGO_ENABLED=0 go build -o webhook -ldflags '-w -extldflags "-static"' .
 
 
 FROM debian:buster-slim
