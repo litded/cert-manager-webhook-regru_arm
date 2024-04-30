@@ -1,5 +1,9 @@
 # ClusterIssuer for the Regru API
 
+### ARM 
+
+Это форк для raspberry pi 4 
+
 ### Motivation
 
 cert-manager automates the management and issuance of TLS certificates in Kubernetes clusters. It ensures that certificates are valid and updates them when necessary.
@@ -58,7 +62,7 @@ git clone https://github.com/flant/cert-manager-webhook-regru.git
 Edit the `values.yaml` file in the cloned repository and enter the appropriate values in the fields `zone`, `image`, `user`, `password`. Example:
 ```yaml
 issuer:
-  image: ghcr.io/flant/cluster-issuer-regru:1.0.1
+  image: litded/cluster-issuer-regru_arm:latest
   user: my_user@example.com
   password: my_password
 ```
