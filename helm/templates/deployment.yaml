@@ -24,7 +24,9 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image: {{ .Values.issuer.image }}
+          imagePullPolicy: {{ .Values.issuer.imagePullPolicy }}
           args:
+            - --secure-port=8443
             - --tls-cert-file=/tls/tls.crt
             - --tls-private-key-file=/tls/tls.key
           env:
@@ -39,7 +41,7 @@ spec:
                   key: REGRU_PASSWORD
           ports:
             - name: https
-              containerPort: 443
+              containerPort: 8443
               protocol: TCP
           livenessProbe:
             httpGet:

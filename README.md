@@ -1,8 +1,6 @@
 # ClusterIssuer for the Regru API
 
-### ARM 
-
-Это форк для raspberry pi 4 
+ARM fork
 
 ### Motivation
 
@@ -18,11 +16,18 @@ This solver allows you to use cert-manager with the Regru API. Documentation on 
 
 ### Preparation
 
-You must check access to the Regru API from your IP(s). You should use this command:
+You must check access to the Regru API from your IP(s). You should do POST request with ContentType `multipart/form-data;`:
 
-```shell
-curl "https://api.reg.ru/api/regru2/zone/get_resource_records?input_data=%7B%22username%22%3A%22USER_NAME%22%2C%22password%22%3A%22PASSWORD_STRING%22%2C%22domains%22%3A%5B%7B%22dname%22%3A%22ZONE_NAME%22%7D%5D%2C%22output_content_type%22%3A%22plain%22%7D&input_format=json"
+```http
+POST "https://www.reg.ru/api/regru2/zone/get_resource_records"
 
+input_format: json
+output_format: json
+io_encoding: utf8
+input_data: {"domains":[{"dname":"ZONE_NAME"}],"password":"PASSWORD","username":"USER_NAME"}
+show_input_params: 0
+username: USER_NAME
+password: PASSWORD
 ```
 where `USER_NAME` and `PASSWORD_STRING` are your credentials to access the Regru API, and `ZONE_NAME` is your domain.
 
@@ -52,7 +57,7 @@ Use the following command from the [official documentation](https://cert-manager
 ```shell
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/VERSION/cert-manager.yaml
 ```
-*  where `VERSION` is necessary version (for example, v1.10.1 )
+*  where `VERSION` is necessary version (for example, v1.15.4 )
 
 ### Install the webhook
 ```shell
@@ -62,7 +67,7 @@ git clone https://github.com/flant/cert-manager-webhook-regru.git
 Edit the `values.yaml` file in the cloned repository and enter the appropriate values in the fields `zone`, `image`, `user`, `password`. Example:
 ```yaml
 issuer:
-  image: litded/cluster-issuer-regru_arm:latest
+  image: ghcr.io/flant/cluster-issuer-regru:1.2.0
   user: my_user@example.com
   password: my_password
 ```
@@ -164,24 +169,3 @@ You're also welcome to follow [@flant_com](https://twitter.com/flant_com) to sta
 # License
 
 Apache License 2.0, see [LICENSE](LICENSE).
-
-
-# Bugs
-
-```
-W1201 18:20:45.326454       1 warnings.go:70] flowcontrol.apiserver.k8s.io/v1beta3 FlowSchema is deprecated in v1.29+, unavailable in v1.32+; use flowcontrol.apiserver.k8s.io/v1 FlowSchema
-W1201 18:20:45.329083       1 warnings.go:70] flowcontrol.apiserver.k8s.io/v1beta3 PriorityLevelConfiguration is deprecated in v1.29+, unavailable in v1.32+; use flowcontrol.apiserver.k8s.io/v1 PriorityLevelConfiguration
-W1201 18:20:45.330745       1 warnings.go:70] flowcontrol.apiserver.k8s.io/v1beta3 FlowSchema is deprecated in v1.29+, unavailable in v1.32+; use flowcontrol.apiserver.k8s.io/v1 FlowSchema
-W1201 18:20:45.332271       1 warnings.go:70] flowcontrol.apiserver.k8s.io/v1beta3 PriorityLevelConfiguration is deprecated in v1.29+, unavailable in v1.32+; use flowcontrol.apiserver.k8s.io/v1 PriorityLevelConfiguration
-```
-Временное решение добавит в темплэйт rbac ClusterRole дополнительно
-```
-  - apiGroups:
-      - "flowcontrol.apiserver.k8s.io"
-    resources:
-      - 'prioritylevelconfigurations'
-      - 'flowschemas'
-    verbs:
-      - 'list'
-      - 'watch'
-```
